@@ -45,6 +45,10 @@ RUN apt-get -y update &&\
     apt-get -yq install kubectl
 RUN which kubectl
 
+## INSTALL HELM
+RUN curl https://raw.githubusercontent.com/kubernetes/helm/master/scripts/get > get-helm.sh \
+    chmod 700 get-helm.sh \
+    ./get-helm.sh -v v2.8.2
 
 # CLEAN UP
 RUN apt-get -y autoremove &&\
