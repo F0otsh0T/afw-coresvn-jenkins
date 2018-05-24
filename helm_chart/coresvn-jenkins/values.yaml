@@ -6,13 +6,13 @@
 ## DEPLOYMENT VALUES
 ##
 Deployment:
-  replicaCount: 1
-  strategy: recreate
+  replicaCount: "1"
+  strategy: "recreate"
   image:
-    repository: 127.0.0.1:30400/afw-coresvn-jenkins
+    repository: "127.0.0.1:30400/afw-coresvn-jenkins"
     tag: latest
     pullPolicy: IfNotPresent
-  containerPort: 8080
+  containerPort: "8080"
   securityContext:
     privileged: true
   volume:
