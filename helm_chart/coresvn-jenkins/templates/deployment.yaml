@@ -1,0 +1,72 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "jenkins.fullname" . }}
+  labels:
+    app: {{ template "jenkins.name" . }}
+    chart: {{ template "jenkins.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.Deployment.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "jenkins.name" . }}
+      release: {{ .Release.Name }}
+      tier: {{ template "jenkins.name" . }}
+  strategy: {{ .Values.Deployment.strategy }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "jenkins.name" . }}
+        release: {{ .Release.Name }}
+        tier: {{ template "jenkins.name" . }}
+    spec:
+      volumes:
+        ## PARENT VOLUME FOR DOCKER SOCKET
+        - name: {{ .Values.Deployment.volume.name01 }}
+          hostPath:
+            path: {{ .Values.Deployment.volume.path01 }}
+        ## PARENT VOLUME FOR PERSISTENT JENKINS STORAGE
+        - name: {{ .Values.Deployment.volume.name02 }}
+          persistentVolumeClaim:
+            claimName: {{ template "jenkins.fullname" . }}
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.Deployment.image.repository }}:{{ .Values.Deployment.image.tag }}"
+          imagePullPolicy: {{ .Values.Deployment.image.pullPolicy }}
+          securityContext:
+            privileged: {{ .Values.Deployment.securityContext.privileged }}
+          volumeMounts:
+          ## CONTAINER VOLUMEMOUNT FOR DOCKER SOCKET
+          - name: {{ .Values.Deployment.volumemount.name01 }}
+            mountPath: {{ .Values.Deployment.volumemount.path01 }}
+          ## CONTAINER VOLUMEMOUNT FOR PERSISTENT JENKINS STORAGE
+          - name: {{ .Values.Deployment.volumemount.name02 }}
+            mountPath: {{ .Values.Deployment.volumemount.path02 }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.Deployment.containerPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+{{ toYaml .Values.Deployment.resources | indent 12 }}
+    {{- with .Values.Deployment.nodeSelector }}
+      nodeSelector:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.Deployment.affinity }}
+      affinity:
+{{ toYaml . | indent 8 }}
+    {{- end }}
+    {{- with .Values.Deployment.tolerations }}
+      tolerations:
+{{ toYaml . | indent 8 }}
+    {{- end }}

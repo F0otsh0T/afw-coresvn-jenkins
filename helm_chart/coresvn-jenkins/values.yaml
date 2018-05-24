@@ -1,0 +1,96 @@
+# Default values for helm.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+########################################
+## DEPLOYMENT VALUES
+##
+Deployment:
+  replicaCount: 1
+  strategy: recreate
+  image:
+    repository: 127.0.0.1:30400/afw-coresvn-jenkins
+    tag: latest
+    pullPolicy: IfNotPresent
+  containerPort: 8080
+  securityContext:
+    privileged: true
+  volume:
+    name01: dockersocket
+    path01: /var/run/docker.sock
+    name02: jenkins-persistent-storage
+    path02: /root/.jenkins
+  volumemount:
+    name01: dockersocket
+    path01: /var/run/docker.sock
+    name02: jenkins-persistent-storage
+    path02: /root/.jenkins
+  resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 128Mi
+  # requests:
+  #  cpu: 100m
+  #  memory: 128Mi
+  nodeSelector: {}
+  tolerations: []
+  affinity: {}
+
+########################################
+## SERVICE VALUES
+##
+Service:
+  type: NodePort
+  port: 80
+
+########################################
+## INGRESS VALUES
+##
+Ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - chart-example.local
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+########################################
+## PERSISTENT VOLUME VALUES
+## ref: https://kubernetes.io/docs/user-guide/persistent-volumes
+##
+Persistence:
+
+  ## Existing Claim
+  # ExistingClaim:
+
+  ## Enable persistence using Persistent Volume Claims
+  ##
+  Enabled: true
+
+  ## Jenkins data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ## set, choosing the default provisioner.
+  ##
+  # StorageClass: "-"
+
+  ## Persistent Volume Access Mode
+  ##
+  AccessMode: ReadWriteOnce
+
+  ## Annotations for Persistent Volume Claim
+  Annotations: {}
+
+  ## Persistent Volume Storage Size
+  ##
+  Size: 8Gi
