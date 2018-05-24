@@ -7,7 +7,7 @@
 ##
 Deployment:
   replicaCount: 1
-  strategy: recreate
+  strategy: RollingUpdate
   image:
     repository: 127.0.0.1:30400/afw-coresvn-jenkins
     tag: latest
