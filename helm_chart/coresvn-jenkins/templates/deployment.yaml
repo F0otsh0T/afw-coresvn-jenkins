@@ -14,7 +14,8 @@ spec:
       app: {{ template "jenkins.name" . }}
       release: {{ .Release.Name }}
       tier: {{ template "jenkins.name" . }}
-  strategy: {{ .Values.Deployment.strategy }}
+  strategy:
+    type: {{ .Values.Deployment.strategy }}
   template:
     metadata:
       labels:
