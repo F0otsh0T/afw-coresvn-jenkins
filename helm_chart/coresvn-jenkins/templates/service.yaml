@@ -11,8 +11,8 @@ spec:
   type: {{ .Values.Service.type }}
   ports:
     - port: {{ .Values.Service.port }}
-#      targetPort: http
-      targetPort: {{ .Values.Service.targetport }}
+      targetPort: http
+      nodePort: {{ .Values.Service.nodeport }}
       protocol: TCP
       name: http
   selector:
