@@ -46,7 +46,7 @@ Deployment:
 Service:
   type: NodePort
   port: 8080
-  nodeport: 30401
+  nodeport: 30600
 
 ########################################
 ## INGRESS VALUES
